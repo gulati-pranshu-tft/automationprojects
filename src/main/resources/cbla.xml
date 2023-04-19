@@ -1,0 +1,29 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="CBLA IB Verifications">
+    <listeners>
+        <listener class-name="com.cbla.utils.TestListenerAdapter"/>
+        <listener class-name="com.cbla.utils.TestStatistics"/>
+    </listeners>
+
+    <parameter name="suiteName" value="CBLA IB Verifications"/>
+    <test name="Create Paper and Exam Verification">
+        <classes>
+            <class name="com.cbla.testcases.smokes.CreationOfExamAndPaperTest"></class>
+        </classes>
+    </test>
+    <test name="Marking Keys Verification">
+        <classes>
+            <class name="com.cbla.testcases.smokes.MarkingKeysVerification"></class>
+        </classes>
+    </test>
+    <test name="PDF Type Dropdown Verification">
+        <classes>
+            <class name="com.cbla.testcases.smokes.PDFTypeVerification"></class>
+        </classes>
+    </test>
+    <test name="Exam Search Page Verification">
+        <classes>
+            <class name="com.cbla.testcases.smokes.ExamSearchPageVerification"></class>
+        </classes>
+    </test>
+</suite>
