@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# Encrypt files with SOPS before committing
+
+set -e
+
+ROOT=$(git rev-parse --show-toplevel)
+
+# check if any files named *.properties exist in the credentials folder
+# Get the list of files to be committed
+files=$(git diff --cached --name-only --diff-filter=ACM | sed -n '/^credentials\//p')
+
+# Loop through the list of files
+for file in $files; do
+  # Get the file extension
+  extension=$(echo "$file" | awk -F '.' '{print $NF}')
+
+  # Check if the file extension is not .enc, .md, or .gitignore
+  if [ "$extension" != "enc" ] && [ "$extension" != "md" ] && [ "$extension" != "gitignore" ]; then
+    echo "Error: You cannot commit files with the .$extension extension in the credentials/ folder."
+    exit 1
+  fi
+done
+
+
+# Decrypt all files in the credentials folder
+for file in credentials/*.enc; do
+  if [ -f "$file" ]; then
+    decryptedData=$(sops --decrypt "$file" | tr -d '[:space:]' | sed -e 's/[^[:print:]]//')
+    filename=$(basename "$file" .enc)
+
+    # Check if corresponding file exists in credentials folder
+    if [ -f "credentials/$filename" ]; then
+      decryptedFileData=$(cat "credentials/$filename" | tr -d '[:space:]' | sed -e 's/[^[:print:]]//')
+
+      # Compare the decrypted data with decrypted properties file data
+      if [ "$decryptedData" = "$decryptedFileData" ]; then
+        echo "***Same data. No need to encrypt again for $filename***"
+      else
+        echo "***Found new data, hence encrypting $filename***"
+        # Encrypt file
+        sops --encrypt --gcp-kms mozillaSopsGcpKey "credentials/$filename" > "credentials/$filename.enc"
+
+        # Add encrypted file to staging area
+        git add "credentials/$filename.enc"
+      fi
+    else
+      echo "File not found: credentials/$filename"
+      exit 1
+    fi
+  fi
+done
+
+echo "ran pre-commit hook"
+
+exit 0

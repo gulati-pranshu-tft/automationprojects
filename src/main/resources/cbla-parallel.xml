@@ -1,0 +1,28 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="CBLA IB Verifications" parallel="tests" thread-count="3">
+    <listeners>
+        <listener class-name="com.cbla.utils.TestListenerAdapter"/>
+        <listener class-name="com.cbla.utils.TestStatistics"/>
+    </listeners>
+
+    <parameter name="suiteName" value="CBLA IB Verifications"/>
+    <parameter name="deviceName" value="grid"/>
+    <parameter name="browser" value="chrome"/>
+    <test name="Creation of exam and paper test Verification">
+        <classes>
+            <class name="com.cbla.testcases.smokes.CreationOfExamAndPaperTest"></class>
+        </classes>
+    </test>
+
+    <test name="Marking Keys Verification">
+        <classes>
+            <class name="com.cbla.testcases.smokes.MarkingKeysVerification"></class>
+        </classes>
+    </test>
+
+    <test name="PDF Type Dropdown Verification">
+        <classes>
+            <class name="com.cbla.testcases.smokes.PDFTypeVerification"></class>
+        </classes>
+    </test>
+</suite>

@@ -1,0 +1,9 @@
+/target/
+/TestExecutionLogs.zip
+/reports/
+.idea
+.classpath
+.project
+*.iml
+/creds/
+credentials.properties

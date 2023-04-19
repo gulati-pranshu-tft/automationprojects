@@ -1,0 +1,13 @@
+#!/bin/sh
+
+ROOT=$(git rev-parse --show-toplevel)
+
+# Iterate over all .enc files in credentials folder
+for enc_file in $ROOT/credentials/*.enc; do
+  # Extract filename without the extension
+  filename=$(basename "$enc_file" .enc)
+  # Decrypt the file to the corresponding file in credentials folder
+  sops --decrypt "$enc_file" > "$ROOT/credentials/$filename"
+done
+
+echo "ran post-checkout hook"
